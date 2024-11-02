@@ -2,11 +2,10 @@
 --■BY TITITCOMMUNITY
 --■Creator: Bilsx
 
-local function obfuscate(code)
+local function obfuscate(code,key)
     local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    local key = os.date("%d%m%y") .. tostring(math.random(1000, 9999))
     local randomizeEnc = tonumber(os.date("%d%m%y")) + #key
-    local clock = os.time()
+    local clock = os.time() %1000000
     local enc = string.len(key) * math.floor(clock / randomizeEnc)
     math.randomseed(clock)
 
@@ -169,7 +168,7 @@ YourScript = [=[
 print("Script is running securely with enhanced obfuscation.")
 ]=]
 
-local obfuscated_code = obfuscate(YourScript)
+local obfuscated_code = obfuscate(YourScript,key)
 print(obfuscated_code)
 
 -- Tes kode obfuscated
