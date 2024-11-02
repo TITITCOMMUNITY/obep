@@ -1,18 +1,15 @@
---■PROJECT OBFUSCATOR
-
+--■PROJECT OBFUSCATOR (Enhanced Secure Loader)
 --■BY TITITCOMMUNITY
-
 --■Creator: Bilsx
 
---(	https://dsc.gg/TITITCOMMUNITY	)
-
 local function obfuscate(code)
-    local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    
-    local randomizeEnc = os.date("%d%m%y")
-    local clock = 1626383648
-    local enc = string.len(key)*math.floor(clock/randomizeEnc)
-    
+    local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    local key = os.date("%d%m%y") .. tostring(math.random(1000, 9999))
+    local randomizeEnc = tonumber(os.date("%d%m%y")) + #key
+    local clock = os.time()
+    local enc = string.len(key) * math.floor(clock / randomizeEnc)
+    math.randomseed(clock)
+
     local function unicodeEnc(code)
         local uchar = {}
         for _, char in utf8.codes(code) do
@@ -38,27 +35,29 @@ local function obfuscate(code)
         until num == 0
         return result
     end
-    
-    -- Generate encryption
+
     code = [[
 --[=[
-"\111\204\147\204\149\205\139\98\204\190\205\134\205\129\102\205\146\204\189\204\144\117\205\138\205\138\205\134\115\204\147\205\152\205\155\99\205\146\205\146\204\144\97\205\139\204\148\204\144\116\205\152\205\160\205\146\101\205\140\204\190\204\146\32\98\205\155\205\152\121\204\146\205\157\205\152\32\84\205\157\204\144\205\157\73\205\157\205\145\204\148\84\205\160\205\157\205\144\73\205\157\205\134\84\204\189\204\148\205\144\67\205\128\204\144\205\139\79\205\134\205\152\204\190\77\204\149\204\190\205\155\77\204\147\205\129\205\157\85\205\160\205\146\204\149\78\205\129\205\140\205\152\73\204\190\205\155\205\155\84\204\154\204\146\205\128\89\205\157\205\128\205\129\32\10\9\9\100\105\115\99\111\114\100\32\58\32\100\115\99\46\103\103\47\84\73\84\73\84\67\79\77\77\85\78\73\84\89\10"
+"\84\105\84\73\84\67\111\109\109\117\110\105\116\121"
 ]=]--
+
+-- Deklarasi fungsi utama yang akan memuat kode
 local function TITITCOMMUNITY(...)
     local base = utf8
-    local aku = ]]..randomizeEnc..[[
-    local suka = ]]..clock..[[
-    local kamu = string.len(key)*math.floor(suka/aku)
+    local aku = ]] .. randomizeEnc .. [[
+    local suka = ]] .. clock .. [[
+    local kamu = string.len(key) * math.floor(suka / aku)
     local TITITC0MMUNITY = ""
-    local _ = "]]..unicodeEnc(code)..[["
+    local _ = "]] .. unicodeEnc(code) .. [["
+    
     for _, concat in base.codes(_) do
         local null = utf8.char(concat - kamu)
         TITITC0MMUNITY = TITITC0MMUNITY .. null
     end
     return load(TITITC0MMUNITY)
 end
-return TITITCOMMUNITY("BILSX IS NOOB CODER !!!")()
-]]    
+return TITITCOMMUNITY("Script secure check completed.")()
+]]
 
     local function generate_junk_code()
         local junk = {
@@ -73,29 +72,32 @@ return TITITCOMMUNITY("BILSX IS NOOB CODER !!!")()
         return junk[math.random(1, #junk)]
     end
 
-    -- Revised anti-debugging function
+    -- Advanced Anti-Debugging dengan beberapa deteksi
     local anti_debug = string.dump(function()
         local function detect_hooks()
-            if debug.gethook() then
-                return true
-            end
+            if debug.gethook() then return true end
             return false
         end
         local function timing_check()
             local start = os.clock()
             for i = 1, 1000000 do end
             local duration = os.clock() - start
-            if duration > 0.5 then  -- Increased threshold
-                return true
-            end
+            if duration > 0.5 then return true end
             return false
         end
-        if detect_hooks() or timing_check() then
+        local function checksum_check(code)
+            local checksum = 0
+            for i = 1, #code do
+                checksum = checksum + code:byte(i)
+            end
+            return checksum
+        end
+
+        if detect_hooks() or timing_check() or checksum_check(" .. code .. ") ~= " .. checksum_check(code) .. " then
             return true
         end
     end)
 
-    -- Convert anti_debug function to alphabetic representation
     local alpha_anti_debug = {}
     for i = 1, #anti_debug do
         table.insert(alpha_anti_debug, num_to_alpha(anti_debug:byte(i)))
@@ -107,30 +109,68 @@ return TITITCOMMUNITY("BILSX IS NOOB CODER !!!")()
     end
     local junk_code = table.concat(lines, "\n")
 
-    -- Dump the bytecode of the junk-filled script
+    -- Encrypt bytecode dump dan buat lapisan ganda
     local bytecode = string.dump(load(junk_code), true)
-
     local alpha_bytecode = {}
     for i = 1, #bytecode do
         table.insert(alpha_bytecode, num_to_alpha(bytecode:byte(i)))
     end
 
-    -- Create the obfuscated code with anti-debugging, anti-print protection, and control flow obfuscation
     local obfuscated = [[
-key=("]]..key..[[")local a="]]..alphabet..[[" local b=0 local c="" for d=1,#c do b=b*#a+(a:find(c:sub(d,d))-1)end local e={} for f in c:gmatch("[^,]+") do b=0 for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1)end table.insert(e,string.char(b))end local g=table.concat(e) local h="]]..table.concat(alpha_anti_debug,",")..[[" local i="]]..table.concat(alpha_bytecode,",")..[[" local j=load or loadstring if j==print then error("Nice try!")end e={} for f in h:gmatch("[^,]+") do b=0 for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1)end table.insert(e,string.char(b))end g=table.concat(e) local k=j(g) k() local l=true local function m(n)if math.random()>0.5 then return n()else ]]..generate_junk_code()..[[return m(n)end end e={} for f in i:gmatch("[^,]+") do b=0 for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1)end table.insert(e,string.char(b))end g=table.concat(e) local o=j(g) return m(o)
+key=("]] .. key .. [[") local a="]] .. alphabet .. [[" local b=0 local c="" 
+for d=1,#c do b=b*#a+(a:find(c:sub(d,d))-1) end 
+local e={} 
+for f in c:gmatch("[^,]+") do 
+    b=0 
+    for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1) end 
+    table.insert(e, string.char(b)) 
+end 
+local g=table.concat(e) 
+local h="]] .. table.concat(alpha_anti_debug, ",") .. [[" 
+local i="]] .. table.concat(alpha_bytecode, ",") .. [[" 
+local j=load or loadstring 
+if j==print then error("Nice try!") end 
+e={} 
+for f in h:gmatch("[^,]+") do 
+    b=0 
+    for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1) end 
+    table.insert(e,string.char(b)) 
+end 
+g=table.concat(e) 
+local k=j(g) 
+k() 
+local l=true 
+local function m(n) 
+    if math.random() > 0.5 then 
+        return n() 
+    else 
+        ]] .. generate_junk_code() .. [[ 
+        return m(n) 
+    end 
+end 
+e={} 
+for f in i:gmatch("[^,]+") do 
+    b=0 
+    for d=1,#f do b=b*#a+(a:find(f:sub(d,d))-1) end 
+    table.insert(e, string.char(b)) 
+end 
+g=table.concat(e) 
+local o=j(g) 
+return m(o)
 ]]
 
     return obfuscated
 end
 
--- Example usage
-key = "THIS SCRIPT PROTECTED USING TITITCOMMUNITY OBFUSCATOR. MORE INFO GO https://dsc.gg/TITITCOMMUNITY"
+-- Contoh penggunaan
+math.randomseed(os.time())  -- Menambahkan seed acak yang dinamis
+key = "PROTECTED BY TITITCOMMUNITY OBFUSCATOR. CHECK MORE INFO https://dsc.gg/TITITCOMMUNITY"
 YourScript = [=[
-print("Bisa Cees")
+print("Script is running securely with enhanced obfuscation.")
 ]=]
 
 local obfuscated_code = obfuscate(YourScript)
 print(obfuscated_code)
 
--- Test the obfuscated code
+-- Tes kode obfuscated
 load(obfuscated_code)()
